@@ -5,13 +5,13 @@ from lenskit import batch, topn
 from lenskit import crossfold as xf
 from lenskit import batch, crossfold
 from lenskit import topn
-from lenskit.algorithms import Recommender, bias, basic
+from lenskit.algorithms import Recommender, bias, basic, item_knn
 from lenskit.metrics.predict import rmse, user_metric
 
 
 if __name__ == "__main__":
     #import the data using pandas, LensKit didn't wroked
-    data_path = '/Users/alex_fr/Code/Group3_RecommenderSystems/DataSet'
+    data_path = 'data'
     ratings_path = f'{data_path}/rating.csv'
     movies_path = f'{data_path}/movie.csv'
 
@@ -26,7 +26,9 @@ if __name__ == "__main__":
     # Our MODELS
     # **
     basic_recommender = Recommender.adapt(basic.Popular())  
-    bias_recommender  = Recommender.adapt(bias.Basic())
+    bias_recommender  = Recommender.adapt(bias.Bias())
+    # in slides says knn needs to have 20 - 50 neigbourhood - but it takes too long to run
+    item_based_cf_recommender = Recommender.adapt(item_knn.ItemItem(10))
 
     # Split the data into training and testing sets using cross val we use 5 folds 
     splits = crossfold.partition_users(ratings, 5, crossfold.SampleFrac(0.2))
